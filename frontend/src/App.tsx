@@ -25,6 +25,7 @@ import AdminMeetingLinksPage from "./pages/admin/AdminMeetingLinksPage";
 import AdminDocumentsPage from "./pages/admin/AdminDocumentsPage";
 import AdminLayout from "./components/admin/AdminLayout";
 import { ProtectedRoute } from "./components/admin/ProtectedRoute";
+import AdminResetPasswordPage from "./pages/admin/AdminResetPasswordPage";
 
 const queryClient = new QueryClient();
 
@@ -50,6 +51,7 @@ function App() {
                   <Route path="/terms" element={<TermsAndConditions />} />
                   <Route path="/privacy" element={<PrivacyPolicy />} />
                   <Route path="/admin/login" element={<AdminLoginPage />} />
+                  <Route path="/admin/reset-password/:token" element={<AdminResetPasswordPage />} />
                   <Route
                     path="/admin"
                     element={
