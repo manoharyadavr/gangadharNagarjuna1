@@ -23,7 +23,7 @@ const Header: React.FC = () => {
   const mobileLinkClasses = "block w-full text-center py-2 font-medium hover:text-primary transition-colors duration-300";
 
   const handleJoinNowClick = () => {
-    openPopup('workshop-registration');
+    openPopup('live-workshops');
   };
 
   return (

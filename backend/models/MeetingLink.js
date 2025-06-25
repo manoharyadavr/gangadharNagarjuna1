@@ -1,19 +1,18 @@
 import mongoose from 'mongoose';
 
 const meetingLinkSchema = new mongoose.Schema({
-  title: {
+  course: {
     type: String,
     required: true,
-    trim: true
+    enum: ['live-workshops', 'premium-combo']
   },
   link: {
     type: String,
     required: true,
     trim: true
   },
-  description: {
-    type: String,
-    trim: true
+  date: {
+    type: Date
   },
   isActive: {
     type: Boolean,
@@ -24,7 +23,7 @@ const meetingLinkSchema = new mongoose.Schema({
 });
 
 // Index for better query performance
-meetingLinkSchema.index({ isActive: 1 });
+meetingLinkSchema.index({ course: 1, isActive: 1 });
 meetingLinkSchema.index({ createdAt: -1 });
 
 export default mongoose.model('MeetingLink', meetingLinkSchema); 

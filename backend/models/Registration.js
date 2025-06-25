@@ -17,10 +17,14 @@ const registrationSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
+  profession: {
+    type: String,
+    trim: true
+  },
   course: {
     type: String,
     required: true,
-    enum: ['workshop-registration', 'live-workshops', 'startup-mastery', 'digital-growth', 'premium-combo']
+    enum: ['live-workshops', 'premium-combo']
   },
   amount: {
     type: Number,

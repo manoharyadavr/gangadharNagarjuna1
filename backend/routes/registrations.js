@@ -83,7 +83,7 @@ router.get('/:id', adminAuth, async (req, res) => {
 // Create new registration
 router.post('/', async (req, res) => {
   try {
-    const { name, email, phone_number, course, amount } = req.body;
+    const { name, email, phone_number, course, amount, profession } = req.body;
 
     if (!name || !email || !phone_number || !course || !amount) {
       return res.status(400).json({
@@ -96,6 +96,7 @@ router.post('/', async (req, res) => {
       name,
       email,
       phone_number,
+      profession,
       course,
       amount
     });

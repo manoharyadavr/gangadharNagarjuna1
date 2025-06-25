@@ -167,7 +167,7 @@ const CoursesPage = () => {
                         <div className="flex flex-col justify-center items-center gap-4">
                             <Button
                                 size="lg"
-                                onClick={() => openPopup('workshop-registration')}
+                                onClick={() => openPopup('live-workshops')}
                                 className="w-full sm:w-auto animate-pulse"
                             >
                                 Register Now

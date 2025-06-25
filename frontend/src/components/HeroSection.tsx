@@ -86,7 +86,7 @@ const HeroSection: React.FC = () => {
                 <Button 
                   size="lg"
                   className="font-bold bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-blue-500/30 transition-all duration-300 transform hover:-translate-y-1 px-8 py-6 text-lg"
-                  onClick={() => openPopup('workshop-registration')}
+                  onClick={() => openPopup('live-workshops')}
                 >
                   Register Now for ₹299
                 </Button>

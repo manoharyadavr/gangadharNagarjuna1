@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -6,13 +5,10 @@ import { X } from 'lucide-react';
 import { BookingForm } from '@/components/booking/BookingForm';
 
 const courseDetails: { [key: string]: { price: number; name: string } } = {
-  'workshop-registration': { price: 299, name: 'Online Workshop Registration' },
   'live-workshops': { price: 299, name: 'Sunday Live Workshops' },
-  'startup-mastery': { price: 25000, name: 'Startup Business Mastery Course' },
-  'digital-growth': { price: 4999, name: 'Digital Business Growth Course' },
-  'premium-combo': { price: 25000, name: 'Premium Combo Course' },
+  'premium-combo': { price: 24999, name: 'Premium Combo Course' },
 };
-const defaultCourse = { price: 299, name: 'Business Foundation Course' };
+const defaultCourse = { price: 299, name: 'Sunday Live Workshops' };
 
 const BookingPage: React.FC = () => {
   const navigate = useNavigate();

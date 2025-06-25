@@ -32,7 +32,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         {/* Sidebar */}
         <div className="w-64 bg-gray-800 shadow-lg border-r border-gray-700">
           <div className="p-6 border-b border-gray-700">
-            <h1 className="text-xl font-bold text-white">Admin Panel</h1>
+            <h1 className="text-xl font-bold text-white">Gangadhar Nagarjuna</h1>
           </div>
           
           {/* Visit Website Button */}

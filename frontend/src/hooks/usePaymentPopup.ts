@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
@@ -11,9 +10,9 @@ interface CourseInfo {
 const courseDetails: { [key: string]: CourseInfo } = {
   'workshop-registration': { name: 'Online Workshop Registration', price: 299, courseId: 'workshop-registration' },
   'live-workshops': { name: 'Sunday Live Workshops', price: 299, courseId: 'live-workshops' },
-  'startup-mastery': { name: 'Startup Business Mastery Course', price: 25000, courseId: 'startup-mastery' },
+  'startup-mastery': { name: 'Startup Business Mastery Course', price: 24999, courseId: 'startup-mastery' },
   'digital-growth': { name: 'Digital Business Growth Course', price: 4999, courseId: 'digital-growth' },
-  'premium-combo': { name: 'Premium Combo Course', price: 25000, courseId: 'premium-combo' },
+  'premium-combo': { name: 'Premium Combo Course', price: 24999, courseId: 'premium-combo' },
 };
 
 export const usePaymentPopup = () => {

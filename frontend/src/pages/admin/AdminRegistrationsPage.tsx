@@ -174,9 +174,10 @@ const generatePDF = async (registrations: Registration[]) => {
             <Table>
               <TableHeader className="bg-muted/50">
                 <TableRow>
-                  <TableHead className="w-[200px]">Name</TableHead>
+                  <TableHead className="w-[160px]">Name</TableHead>
                   <TableHead className="hidden md:table-cell">Email</TableHead>
                   <TableHead className="hidden lg:table-cell">Phone</TableHead>
+                  <TableHead className="hidden md:table-cell w-[140px]">Profession</TableHead>
                   <TableHead>Amount</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead className="hidden sm:table-cell text-right">Registered On</TableHead>
@@ -192,6 +193,7 @@ const generatePDF = async (registrations: Registration[]) => {
                       </TableCell>
                       <TableCell className="hidden md:table-cell">{reg.email}</TableCell>
                       <TableCell className="hidden lg:table-cell">{reg.phone_number || 'N/A'}</TableCell>
+                      <TableCell className="hidden md:table-cell">{reg.profession || 'N/A'}</TableCell>
                       <TableCell>
                         <div className="font-semibold">
                           {reg.amount && reg.amount > 0 ? 
@@ -219,7 +221,7 @@ const generatePDF = async (registrations: Registration[]) => {
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={6} className="h-24 text-center">
+                    <TableCell colSpan={7} className="h-24 text-center">
                       No registrations found.
                     </TableCell>
                   </TableRow>

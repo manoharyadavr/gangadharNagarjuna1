@@ -11,10 +11,15 @@ import { toast } from 'sonner';
 import { Loader2, Save, Plus, Edit, Trash2 } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
+const COURSE_OPTIONS = [
+  { value: 'live-workshops', label: 'Sunday Live Workshops – Weekly Business & Digital Training (₹299)' },
+  { value: 'premium-combo', label: 'Super Premium Live Courses – Intensive Daily Training (₹24,999)' },
+];
+
 interface CreateMeetingLinkData {
-  title: string;
+  course: string;
   link: string;
-  description?: string;
+  date?: string;
   isActive: boolean;
 }
 
@@ -52,10 +57,10 @@ const deleteMeetingLink = async (id: string): Promise<void> => {
 export default function AdminMeetingLinksPage() {
   const [isEditing, setIsEditing] = useState<string | null>(null);
   const [isCreating, setIsCreating] = useState(false);
-  const [formData, setFormData] = useState({
-    title: '',
+  const [formData, setFormData] = useState<CreateMeetingLinkData>({
+    course: '',
     link: '',
-    description: '',
+    date: '',
     isActive: true
   });
 
@@ -72,7 +77,7 @@ export default function AdminMeetingLinksPage() {
       toast.success('Meeting link created successfully');
       queryClient.invalidateQueries({ queryKey: ['meetingLinks'] });
       setIsCreating(false);
-      setFormData({ title: '', link: '', description: '', isActive: true });
+      setFormData({ course: '', link: '', date: '', isActive: true });
     },
     onError: (error: Error) => {
       toast.error(`Failed to create meeting link: ${error.message}`);
@@ -106,18 +111,18 @@ export default function AdminMeetingLinksPage() {
     e.preventDefault();
     if (isCreating) {
       createMutation.mutate({
-        title: formData.title,
+        course: formData.course,
         link: formData.link,
-        description: formData.description || undefined,
+        date: formData.date || undefined,
         isActive: formData.isActive
       });
     } else if (isEditing) {
       updateMutation.mutate({
         id: isEditing,
         data: {
-          title: formData.title,
+          course: formData.course,
           link: formData.link,
-          description: formData.description || undefined,
+          date: formData.date || undefined,
           isActive: formData.isActive
         }
       });
@@ -127,9 +132,9 @@ export default function AdminMeetingLinksPage() {
   const startEditing = (link: MeetingLink) => {
     setIsEditing(link._id);
     setFormData({
-      title: link.title || '',
+      course: link.course || '',
       link: link.link,
-      description: link.description || '',
+      date: link.date ? new Date(link.date).toISOString().slice(0, 10) : '',
       isActive: link.isActive
     });
   };
@@ -171,16 +176,22 @@ export default function AdminMeetingLinksPage() {
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <Label htmlFor="title">Title</Label>
-                <Input
-                  id="title"
-                  value={formData.title}
-                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  placeholder="e.g., Course ₹299 Workshop"
+                <Label htmlFor="course">Course</Label>
+                <select
+                  id="course"
+                  value={formData.course}
+                  onChange={(e) => setFormData({ ...formData, course: e.target.value })}
                   required
-                />
+                  className="w-full border rounded px-3 py-2 bg-gray-900 text-white"
+                >
+                  <option value="" className="text-white bg-gray-900">Select course</option>
+                  {COURSE_OPTIONS.map(opt => (
+                    <option key={opt.value} value={opt.value} className="text-white bg-gray-900">
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
               </div>
-              
               <div>
                 <Label htmlFor="link">Meeting URL</Label>
                 <Input
@@ -192,52 +203,31 @@ export default function AdminMeetingLinksPage() {
                   required
                 />
               </div>
-
               <div>
-                <Label htmlFor="description">Description (Optional)</Label>
-                <Textarea
-                  id="description"
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  placeholder="Additional details about this meeting link"
+                <Label htmlFor="date">Date (optional)</Label>
+                <Input
+                  id="date"
+                  type="date"
+                  value={formData.date}
+                  onChange={(e) => setFormData({ ...formData, date: e.target.value })}
                 />
               </div>
-
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center gap-2">
                 <input
-                  type="checkbox"
                   id="isActive"
+                  type="checkbox"
                   checked={formData.isActive}
                   onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                  className="rounded"
                 />
                 <Label htmlFor="isActive">Active</Label>
               </div>
-
-              <div className="flex gap-2">
-                <Button 
-                  type="submit" 
-                  disabled={createMutation.isPending || updateMutation.isPending}
-                >
-                  {(createMutation.isPending || updateMutation.isPending) ? (
-                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  ) : (
-                    <Save className="h-4 w-4 mr-2" />
-                  )}
-                  {isCreating ? 'Create Link' : 'Update Link'}
-                </Button>
-                <Button 
-                  type="button" 
-                  variant="outline"
-                  onClick={() => {
-                    setIsCreating(false);
-                    setIsEditing(null);
-                    setFormData({ title: '', link: '', description: '', isActive: true });
-                  }}
-                >
-                  Cancel
-                </Button>
-              </div>
+              <Button type="submit" className="w-full font-bold">
+                <Save className="h-4 w-4 mr-2" />
+                {isCreating ? 'Create Link' : 'Save Changes'}
+              </Button>
+              <Button type="button" variant="outline" className="w-full mt-2" onClick={() => { setIsCreating(false); setIsEditing(null); }}>
+                Cancel
+              </Button>
             </form>
           </CardContent>
         </Card>
@@ -245,75 +235,38 @@ export default function AdminMeetingLinksPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Meeting Links</CardTitle>
-          <CardDescription>Manage meeting links for different courses and events.</CardDescription>
+          <CardTitle>All Meeting Links</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="border rounded-lg overflow-hidden">
-            <Table>
-              <TableHeader className="bg-muted/50">
-                <TableRow>
-                  <TableHead>Title</TableHead>
-                  <TableHead>Meeting URL</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Course</TableHead>
+                <TableHead>Meeting Link</TableHead>
+                <TableHead>Date</TableHead>
+                <TableHead>Active</TableHead>
+                <TableHead>Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {meetingLinks && meetingLinks.length > 0 ? meetingLinks.map(link => (
+                <TableRow key={link._id}>
+                  <TableCell>{COURSE_OPTIONS.find(opt => opt.value === link.course)?.label || link.course}</TableCell>
+                  <TableCell><a href={link.link} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">{link.link}</a></TableCell>
+                  <TableCell>{link.date ? new Date(link.date).toLocaleDateString() : '-'}</TableCell>
+                  <TableCell>{link.isActive ? 'Yes' : 'No'}</TableCell>
+                  <TableCell className="flex gap-2">
+                    <Button size="sm" variant="outline" onClick={() => startEditing(link)}><Edit className="h-4 w-4" /></Button>
+                    <Button size="sm" variant="destructive" onClick={() => deleteMutation.mutate(link._id)}><Trash2 className="h-4 w-4" /></Button>
+                  </TableCell>
                 </TableRow>
-              </TableHeader>
-              <TableBody>
-                {meetingLinks && meetingLinks.length > 0 ? (
-                  meetingLinks.map((link) => (
-                    <TableRow key={link._id}>
-                      <TableCell className="font-medium">{link.title}</TableCell>
-                      <TableCell className="max-w-xs truncate">
-                        <a 
-                          href={link.link} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="text-blue-600 hover:underline"
-                        >
-                          {link.link}
-                        </a>
-                      </TableCell>
-                      <TableCell>
-                        <span className={`px-2 py-1 rounded-full text-xs ${
-                          link.isActive 
-                            ? 'bg-green-100 text-green-800' 
-                            : 'bg-gray-100 text-gray-800'
-                        }`}>
-                          {link.isActive ? 'Active' : 'Inactive'}
-                        </span>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex gap-2 justify-end">
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => startEditing(link)}
-                          >
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="destructive"
-                            onClick={() => deleteMutation.mutate(link._id)}
-                            disabled={deleteMutation.isPending}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell colSpan={4} className="h-24 text-center">
-                      No meeting links found. Create your first one!
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </div>
+              )) : (
+                <TableRow>
+                  <TableCell colSpan={5} className="text-center">No meeting links found.</TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
         </CardContent>
       </Card>
     </div>

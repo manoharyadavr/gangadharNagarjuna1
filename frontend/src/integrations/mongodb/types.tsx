@@ -14,6 +14,7 @@ export interface Registration {
   name: string;
   email: string;
   phone_number: string;
+  profession?: string;
   course: string;
   amount: number;
   status: 'pending' | 'completed' | 'failed';
@@ -25,9 +26,9 @@ export interface Registration {
 
 export interface MeetingLink {
   _id: string;
-  title: string;
+  course: string;
   link: string;
-  description?: string;
+  date?: string | Date;
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;

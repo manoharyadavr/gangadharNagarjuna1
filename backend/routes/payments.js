@@ -53,11 +53,8 @@ router.post('/verify', async (req, res) => {
 
     // Course details for email
     const courseDetails = {
-      'workshop-registration': { price: 299, name: 'Online Workshop Registration' },
       'live-workshops': { price: 299, name: 'Sunday Live Workshops' },
-      'startup-mastery': { price: 25000, name: 'Startup Business Mastery Course' },
-      'digital-growth': { price: 4999, name: 'Digital Business Growth Course' },
-      'premium-combo': { price: 25000, name: 'Premium Combo Course' },
+      'premium-combo': { price: 24999, name: 'Premium Combo Course' },
     };
 
     const selectedCourse = courseDetails[course_id] || { price: 299, name: 'Business Foundation Course' };
@@ -69,7 +66,8 @@ router.post('/verify', async (req, res) => {
         name: registration.name,
         courseName: selectedCourse.name,
         coursePrice: selectedCourse.price,
-        registrationId: registration._id
+        registrationId: registration._id,
+        courseId: course_id
       });
     } catch (emailError) {
       console.error('Email sending failed:', emailError);

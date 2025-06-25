@@ -7,12 +7,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Loader2, AlertCircle, IndianRupee, Users } from 'lucide-react';
 
 const courseNames: { [key: string]: string } = {
-  'workshop-registration': 'Online Workshop Registration',
   'live-workshops': 'Sunday Live Workshops',
-  'startup-mastery': 'Startup Business Mastery Course',
-  'digital-growth': 'Digital Business Growth Course',
   'premium-combo': 'Premium Combo Course',
-  'default': 'Business Foundation Course',
+  'default': 'Sunday Live Workshops',
 };
 
 interface RevenueStat {

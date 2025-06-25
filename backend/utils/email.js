@@ -21,52 +21,74 @@ const createTransporter = () => {
   });
 };
 
-const sendConfirmationEmail = async ({ email, name, courseName, coursePrice, registrationId }) => {
+const sendConfirmationEmail = async ({ email, name, courseName, coursePrice, registrationId, courseId }) => {
   try {
     const transporter = createTransporter();
 
-    // Get active meeting links
-    const meetingLinks = await MeetingLink.find({ isActive: true }).sort({ createdAt: -1 });
-    const latestMeetingLink = meetingLinks[0];
+    // Debug: Log the courseId being used
+    console.log('Looking for meeting link for courseId:', courseId);
+
+    // Fetch the active meeting link for the specific course
+    const meetingLinkDoc = await MeetingLink.findOne({ course: courseId, isActive: true }).sort({ createdAt: -1 });
+    console.log('Meeting link document found:', meetingLinkDoc);
+    const meetLink = meetingLinkDoc ? meetingLinkDoc.link : null;
+    console.log('meetLink value:', meetLink);
+
+    const today = new Date();
+    // Use the meeting link date if available, otherwise fallback to today
+    let sessionDate = today;
+    if (meetingLinkDoc && meetingLinkDoc.date) {
+      sessionDate = new Date(meetingLinkDoc.date);
+    }
+    const formattedDate = sessionDate.toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' });
 
     const emailContent = `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <div style="background-color: #f8f9fa; padding: 20px; text-align: center;">
-          <h1 style="color: #333; margin: 0;">🎉 Payment Confirmed!</h1>
+      <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #f4f6fb; padding: 0;">
+        <div style="background: #2563eb; color: #fff; padding: 28px 20px 18px 20px; text-align: center; border-radius: 12px 12px 0 0;">
+          <h1 style="margin: 0; font-size: 2rem; font-weight: 700; letter-spacing: 0.5px;">Payment Confirmation</h1>
+          <p style="margin: 8px 0 0 0; font-size: 1.1rem;">Thank you for your registration!</p>
         </div>
-        
-        <div style="padding: 30px; background-color: white;">
-          <h2 style="color: #333;">Hello ${name},</h2>
-          
-          <p style="color: #666; line-height: 1.6;">
-            Thank you for your payment! Your registration for <strong>${courseName}</strong> has been confirmed.
+        <div style="background: #fff; padding: 32px 24px 24px 24px; border-radius: 0 0 12px 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+          <h2 style="color: #222; font-size: 1.3rem; margin-top: 0;">Hello ${name},</h2>
+          <p style="color: #444; font-size: 1.05rem; line-height: 1.7; margin-bottom: 24px;">
+            We are pleased to confirm that your payment for <strong>${courseName}</strong> has been received and your registration is now <span style="color: #22c55e; font-weight: 600;">confirmed</span>.
           </p>
-          
-          <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <h3 style="color: #333; margin-top: 0;">Registration Details:</h3>
-            <p><strong>Course:</strong> ${courseName}</p>
-            <p><strong>Amount Paid:</strong> ₹${coursePrice}</p>
-            <p><strong>Registration ID:</strong> ${registrationId}</p>
+
+          <div style="background: #f1f5f9; border-radius: 8px; padding: 18px 20px; margin-bottom: 24px;">
+            <table style="width: 100%; font-size: 1rem; color: #222;">
+              <tr><td style="padding: 4px 0; font-weight: 600;">Course:</td><td style="padding: 4px 0;">${courseName}</td></tr>
+              <tr><td style="padding: 4px 0; font-weight: 600;">Amount Paid:</td><td style="padding: 4px 0;">₹${coursePrice}</td></tr>
+              <tr><td style="padding: 4px 0; font-weight: 600;">Registration ID:</td><td style="padding: 4px 0;">${registrationId}</td></tr>
+              <tr><td style="padding: 4px 0; font-weight: 600;">Date:</td><td style="padding: 4px 0;">${formattedDate}</td></tr>
+            </table>
           </div>
-          
-          ${latestMeetingLink ? `
-          <div style="background-color: #e8f5e8; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <h3 style="color: #2d5a2d; margin-top: 0;">📅 Meeting Link:</h3>
-            <p><strong>Date:</strong> ${new Date(latestMeetingLink.date).toLocaleDateString('en-IN')}</p>
-            <p><strong>Time:</strong> ${latestMeetingLink.time}</p>
-            <p><strong>Link:</strong> <a href="${latestMeetingLink.link}" style="color: #007bff;">${latestMeetingLink.link}</a></p>
+
+          ${meetLink ? `
+          <div style="background: #e0f7fa; border-left: 4px solid #2563eb; border-radius: 8px; padding: 18px 20px; margin-bottom: 24px;">
+            <h3 style="margin: 0 0 8px 0; color: #2563eb; font-size: 1.1rem;">Your Meeting Link</h3>
+            <a href="${meetLink}" style="display: inline-block; background: #2563eb; color: #fff; font-weight: 600; padding: 12px 28px; border-radius: 6px; text-decoration: none; font-size: 1.08rem; margin-bottom: 8px;">Join Meeting</a>
+            <p style="margin: 10px 0 0 0; color: #444; font-size: 0.98rem;">Please use this link to join your session at the scheduled time. Do not share this link with others.</p>
           </div>
           ` : ''}
-          
-          <p style="color: #666; line-height: 1.6;">
-            We're excited to have you join us! If you have any questions, please don't hesitate to reach out.
-          </p>
-          
-          <p style="color: #666; line-height: 1.6;">
-            Best regards,<br>
+
+          <div style="margin-bottom: 24px;">
+            <h4 style="margin: 0 0 8px 0; color: #222; font-size: 1.08rem;">Next Steps</h4>
+            <ul style="color: #444; font-size: 1rem; padding-left: 20px; margin: 0;">
+              <li>Check your calendar and set a reminder for the session date.</li>
+              <li>Join the meeting 5 minutes before the scheduled time.</li>
+              <li>For any questions, reply to this email.</li>
+            </ul>
+          </div>
+
+          <p style="color: #666; font-size: 0.98rem; margin-bottom: 0;">
+            We look forward to seeing you at the session!<br>
             <strong>Gangadhar Nagarjuna</strong><br>
             Business Academy
           </p>
+        </div>
+        <div style="text-align: center; color: #aaa; font-size: 0.92rem; padding: 18px 0 8px 0;">
+          &copy; ${today.getFullYear()} Gangadhar Nagarjuna Business Academy. All rights reserved.<br>
+          <span style="font-size: 0.9em;">This is an automated message. Please do not reply directly to this email.</span>
         </div>
       </div>
     `;
@@ -75,7 +97,7 @@ const sendConfirmationEmail = async ({ email, name, courseName, coursePrice, reg
       await transporter.sendMail({
         from: process.env.EMAIL_USER,
         to: email,
-        subject: `Payment Confirmed - ${courseName}`,
+        subject: `Payment Confirmation - ${courseName}`,
         html: emailContent
       });
       console.log('✅ Confirmation email sent successfully to:', email);
@@ -83,12 +105,9 @@ const sendConfirmationEmail = async ({ email, name, courseName, coursePrice, reg
       console.log('📧 Demo mode - Email would be sent to:', email);
       console.log('📧 Email content:', emailContent);
     }
-    
     return { success: true };
   } catch (error) {
     console.error('❌ Email sending error:', error);
-    
-    // Don't throw error, just log it and return success to not break payment flow
     console.log('📧 Email failed but payment verification will continue');
     return { success: false, error: error.message };
   }

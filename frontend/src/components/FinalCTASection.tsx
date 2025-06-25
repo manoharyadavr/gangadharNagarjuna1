@@ -54,7 +54,7 @@ const FinalCTASection: React.FC = () => {
               <Button 
                 id="final-cta-button"
                 className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-lg md:text-xl px-8 py-4 group shadow-2xl"
-                onClick={() => openPopup('workshop-registration')}
+                onClick={() => openPopup('live-workshops')}
               >
                 Book My Spot Now
                 <ArrowRight className="ml-2 h-6 w-6 transition-transform duration-300 group-hover:translate-x-1" />

@@ -11,11 +11,8 @@ declare global {
 }
 
 const courseDetails: { [key: string]: { price: number; name: string } } = {
-  'workshop-registration': { price: 299, name: 'Online Workshop Registration' },
   'live-workshops': { price: 299, name: 'Sunday Live Workshops' },
-  'startup-mastery': { price: 25000, name: 'Startup Business Mastery Course' },
-  'digital-growth': { price: 4999, name: 'Digital Business Growth Course' },
-  'premium-combo': { price: 25000, name: 'Premium Combo Course' },
+  'premium-combo': { price: 24999, name: 'Premium Combo Course' },
 };
 
 const loadRazorpayScript = () => {
@@ -45,8 +42,8 @@ export const useBookingForm = () => {
             }
             console.log("Razorpay script loaded successfully.");
 
-            const courseId = searchParams.get('course') || 'workshop-registration';
-            const selectedCourse = courseDetails[courseId] || { price: 299, name: 'Business Foundation Course' };
+            const courseId = searchParams.get('course') || 'live-workshops';
+            const selectedCourse = courseDetails[courseId] || { price: 299, name: 'Sunday Live Workshops' };
             
             console.log("Selected course:", selectedCourse);
             console.log("Course ID:", courseId);

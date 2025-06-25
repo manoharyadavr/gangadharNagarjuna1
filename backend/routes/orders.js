@@ -9,7 +9,7 @@ const router = express.Router();
 // Create order (replaces Supabase create-order function)
 router.post('/create', async (req, res) => {
   try {
-    const { name, email, phone_number, course } = req.body;
+    const { name, email, phone_number, course, profession } = req.body;
 
     if (!name || !email || !phone_number || !course) {
       return res.status(400).json({
@@ -20,11 +20,8 @@ router.post('/create', async (req, res) => {
 
     // Course details mapping
     const courseDetails = {
-      'workshop-registration': { price: 299, name: 'Online Workshop Registration' },
       'live-workshops': { price: 299, name: 'Sunday Live Workshops' },
-      'startup-mastery': { price: 25000, name: 'Startup Business Mastery Course' },
-      'digital-growth': { price: 4999, name: 'Digital Business Growth Course' },
-      'premium-combo': { price: 25000, name: 'Premium Combo Course' },
+      'premium-combo': { price: 24999, name: 'Premium Combo Course' },
     };
 
     const selectedCourse = courseDetails[course] || { price: 299, name: 'Business Foundation Course' };
@@ -54,6 +51,7 @@ router.post('/create', async (req, res) => {
       name,
       email,
       phone_number,
+      profession,
       course,
       amount,
       status: 'pending'
